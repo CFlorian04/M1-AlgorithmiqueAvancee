@@ -12,5 +12,10 @@ public class Noeud {
         this.fils = null;
     }
 
+    public Noeud(char caractere, Noeud fils, Noeud frere) {
+        this.caractere = caractere;
+        this.fils = fils;
+        this.frere = frere;
+    }
 
 }

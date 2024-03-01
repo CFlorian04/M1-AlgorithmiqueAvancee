@@ -1,135 +1,118 @@
 package structures.Briandais;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 public class Briandais {
 
     private Noeud racine;
 
     public Briandais() {
-        this.racine = new Noeud('\0');
+        this.racine = new Noeud('\0'); 
     }
-
-    // Insérer un mot dans l'arbre
+    // Méthode pour insérer un mot dans l'arbre
     public void inserer(String mot) {
-        inserer(this.racine, mot);
+        racine = BRDinsertion(racine, mot);
     }
 
-    private void inserer(Noeud noeud, String mot) {
-        if (mot.isEmpty()) return;
-    
-        
-    
-        Noeud courant = noeud.fils;
-        Noeud precedent = null;
-    
-        // Trouver une position 
-        while (courant != null && courant.caractere < premier(mot)) {
-            precedent = courant;
-            courant = courant.frere;
+    // Fonction récursive d'insertion 
+    private Noeud BRDinsertion(Noeud A, String m) {
+        if (m.equals("")) {
+            return new Noeud('\0', null, A); 
         }
-    
-        // Si le caractère n'existe pas encore à cet endroit, on crée un nouveau noeud
-        if (courant == null || courant.caractere > premier(mot)) {
-            Noeud nouveauNoeud = new Noeud(premier(mot));
-            if (precedent == null) {
-                // Insertion au début de la liste de frères
-                nouveauNoeud.frere = noeud.fils;
-                noeud.fils = nouveauNoeud;
-            } else {
-                // Insertion au milieu ou à la fin de la liste de frères
-                nouveauNoeud.frere = precedent.frere;
-                precedent.frere = nouveauNoeud;
-            }
-            courant = nouveauNoeud;
+        if (A == null) {
+            return BRDcons(m);
         }
-    
-        if (!reste(mot).isEmpty()) {
-            inserer(courant, reste(mot));
+        char t = premier(m);
+        if (A.caractere < t) {
+            A.frere = BRDinsertion(A.frere, m);
+            return A;
         }
-    }
-    
-   
-    public boolean rechercher(String mot) {
-        return rechercher(this.racine, mot);
+        if (A.caractere == t) {
+            A.fils = BRDinsertion(A.fils, reste(m));
+            return A;
+        }
+        if (A.caractere > t) {
+            return new Noeud(t, BRDcons(reste(m)), A);
+        }
+        return A; 
     }
 
-    private boolean rechercher(Noeud noeud, String mot) {
-        if (mot.isEmpty()) return true; 
-        
-
-        Noeud enfantActuel = noeud.fils;
-        
-
-        while (enfantActuel != null) {
-            if (enfantActuel.caractere == premier(mot)) {
-                return rechercher(enfantActuel, reste(mot));
-            }
-            enfantActuel = enfantActuel.frere;
+    private Noeud BRDcons(String m) {
+        if (m.equals("")) {
+            return new Noeud('\0', null, null); 
+        } else {
+            return new Noeud(premier(m), BRDcons(reste(m)), null);
         }
-
-        return false; 
     }
 
-    public void afficherArbre() {
-        afficherArbre(this.racine, "");
-    }
-
-    private void afficherArbre(Noeud noeud, String indent) {
-        if (noeud == null) {
-            return;
-        }
-    
-        System.out.println(indent + noeud.caractere + " . ");
-    
-        if (noeud.fils != null) {
-            afficherArbre(noeud.fils, indent );
-        }
-    
-        if (noeud.frere != null) {
-            System.out.println(indent + " |________ ");
-            afficherArbre(noeud.frere, indent);
-        }
-
-        
-    }
-
-    public char premier(String s){
+    // Fonction pour obtenir le premier caractère d'une chaîne
+    private char premier(String s) {
         return s.charAt(0);
     }
 
-    public String reste(String s){
+    // Fonction pour obtenir la chaîne sans le premier caractère
+    private String reste(String s) {
         return s.substring(1);
     }
 
-    
-    
+    public boolean recherche(String mot) {
+        return recherche(racine, mot + "\0"); 
+    }
 
-
-
-    public class Main {
-        public static void main(String[] args) {
-            Briandais trie = new Briandais();
-            //trie.inserer("test2");
-            //trie.inserer("abc");
-            //trie.inserer("test1");
     
-            
-    
-            /*System.out.println(trie.rechercher("test1"));   
-            System.out.println(trie.rechercher("test123"));  
-            System.out.println(trie.rechercher("test"));  
-            System.out.println(trie.rechercher("test2")); */
+    private boolean recherche(Noeud noeud, String mot) {
+        if (mot.isEmpty()) {
+            return true; // Tous les caractères ont été trouvés ou c'est un mot vide
+        }
+        if (noeud == null) {
+            return false; // Fin du parcours sans trouver le mot
+        }
+        
 
-            String exemple_de_base = "A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches du clavier de la machine a ecrire ?";
-            
-            // Séparer le texte en mots et les insérer dans l'arbre
-            String[] mots = exemple_de_base.split("\\s+");
-            for (String mot : mots) {
-                trie.inserer(mot);
-            }
-    
-            trie.afficherArbre();
+        // Si le caractère actuel correspond, continuer avec le fils
+        if (noeud.caractere == premier(mot)) {
+            return recherche(noeud.fils, reste(mot));
+        } else {
+            // Sinon, passer au frère suivant
+            return recherche(noeud.frere, mot);
         }
     }
+
+
+    
+    public static void main(String[] args) {
+        Briandais trie = new Briandais();
+
+        String exemple_de_base = "A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches du clavier de la machine a ecrire ?";
+        
+        // Séparer le texte en mots et les insérer dans l'arbre
+        /*String[] mots = exemple_de_base.split("\\s+|(?=,)|(?<=,)");
+        Set<String> setSansDoublons = new LinkedHashSet<>();
+        for (String mot : mots) {
+            // Ajout du mot au set, les doublons seront ignorés
+            setSansDoublons.add(mot);
+        }
+        for (String mot : setSansDoublons) {
+            trie.inserer(mot);
+            System.out.println(mot);
+
+        }
+        System.out.println("taille " + setSansDoublons.size());*/
+
+
+        Briandais trie2 = new Briandais();
+        trie2.inserer("abc2");
+        trie2.inserer("abc1");
+        trie2.inserer("test2");
+
+        
+    
+
+
+
+    }
+    
 
 }
 
