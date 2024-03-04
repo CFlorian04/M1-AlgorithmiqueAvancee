@@ -13,12 +13,14 @@ public class Briandais {
     public Briandais() {
         this.racine = new Noeud('\0'); 
     }
-    // Méthode pour insérer un mot dans l'arbre
+
+    public Briandais(char caractere, Noeud fils, Noeud frere){
+        this.racine = new Noeud(caractere, fils, frere);
+    }
     public void inserer(String mot) {
         racine = BRDinsertion(racine, mot);
     }
 
-    // Fonction récursive d'insertion 
     private Noeud BRDinsertion(Noeud A, String m) {
         if (m.equals("")) {
             return new Noeud('\0', null, A); 
@@ -49,47 +51,39 @@ public class Briandais {
         }
     }
 
-    // Fonction pour obtenir le premier caractère d'une chaîne
+
     private char premier(String s) {
         return s.charAt(0);
     }
 
-    // Fonction pour obtenir la chaîne sans le premier caractère
     private String reste(String s) {
         return s.substring(1);
     }
 
     public boolean recherche(String mot) {
-        return recherche(racine, mot + "\0"); 
+        return BRDrecherche(racine, mot + "\0"); 
     }
 
     
-    private boolean recherche(Noeud noeud, String mot) {
-        if (mot.isEmpty()) {
-            return true; // Tous les caractères ont été trouvés ou c'est un mot vide
-        }
-        if (noeud == null) {
-            return false; // Fin du parcours sans trouver le mot
-        }
+    private boolean BRDrecherche(Noeud noeud, String mot) {
+        if (mot.isEmpty()) return true; 
         
-
-        // Si le caractère actuel correspond, continuer avec le fils
+        if (noeud == null) return false; 
+        
         if (noeud.caractere == premier(mot)) {
-            return recherche(noeud.fils, reste(mot));
+            return BRDrecherche(noeud.fils, reste(mot));
         } else {
-            // Sinon, passer au frère suivant
-            return recherche(noeud.frere, mot);
+            return BRDrecherche(noeud.frere, mot);
         }
     }
 
 
 
     public int comptageMots() {
-        return comptageMots(this.racine);
+        return BRDcomptageMots(this.racine);
     }
 
-    // Méthode récursive pour compter les mots
-    private int comptageMots(Noeud noeud) {
+    private int BRDcomptageMots(Noeud noeud) {
         if (noeud == null) return 0;
         
         int compteur = 0;
@@ -97,95 +91,79 @@ public class Briandais {
             compteur = 1;
         }
 
-        // Compter récursivement les mots dans les noeuds fils et frère
-        compteur += comptageMots(noeud.fils); 
-        compteur += comptageMots(noeud.frere); 
+        compteur += BRDcomptageMots(noeud.fils); 
+        compteur += BRDcomptageMots(noeud.frere); 
 
         return compteur;
     }
 
     public List<String> listeMots() {
         List<String> mots = new ArrayList<>();
-        rec_listeMots(racine, "", mots);
+        BRDlisteMots(racine, "", mots);
         return mots;
     }
 
-    // Fonction récursive pour parcourir l'arbre 
-    private void rec_listeMots(Noeud noeud, String motCourant, List<String> mots) {
+    private void BRDlisteMots(Noeud noeud, String motCourant, List<String> mots) {
         if (noeud == null) return;
 
-        // Ajouter le mot courant si c'est une fin de mot 
         if (noeud.caractere == '\0') {
             mots.add(motCourant);
         }
 
-        // Parcourir les fils 
-        rec_listeMots(noeud.fils, motCourant + noeud.caractere, mots);
-
-        // Parcourir les frères 
-        rec_listeMots(noeud.frere, motCourant, mots);
+        BRDlisteMots(noeud.fils, motCourant + noeud.caractere, mots);
+        BRDlisteMots(noeud.frere, motCourant, mots);
     }
 
     public int comptageNil() {
-        return rec_comptageNil(racine);
+        return BRDcomptageNil(racine);
     }
 
-    // Fonction récursive pour compter les pointeurs vers Nil
-    private int rec_comptageNil(Noeud noeud) {
-        if (noeud == null) return 1; // Pointeur vers Nil
+    private int BRDcomptageNil(Noeud noeud) {
+        if (noeud == null) return 1; 
 
         int compteur = 0;
-        compteur += rec_comptageNil(noeud.fils);
-        compteur += rec_comptageNil(noeud.frere);
+        compteur += BRDcomptageNil(noeud.fils);
+        compteur += BRDcomptageNil(noeud.frere);
 
         return compteur;
     }
 
     public int hauteur() {
-        return rec_hauteur(racine);
+        return BRDhauteur(racine);
     }
 
-    private int rec_hauteur(Noeud noeud) {
+    private int BRDhauteur(Noeud noeud) {
         if (noeud == null) return 0;
 
-        // Calculer récursivement la hauteur des sous-arbres fils et frères
-        int hauteurFils = rec_hauteur(noeud.fils);
-        int hauteurFrere = rec_hauteur(noeud.frere);
+        int hauteurFils = BRDhauteur(noeud.fils);
+        int hauteurFrere = BRDhauteur(noeud.frere);
 
-        // La hauteur de l'arbre est la hauteur maximale entre les fils et les frères +1 pour le nœud actuel
         return Math.max(hauteurFils, hauteurFrere) + 1;
     }
 
     public double profondeurMoyenne() {
-        // Appel à une fonction auxiliaire pour calculer la profondeur moyenne
         int[] profondeursEtFeuilles = calculerProfondeursEtFeuilles(racine, 0);
         
-        // Éviter une division par zéro
         if (profondeursEtFeuilles[1] == 0) return 0;
         
-        // Calcul de la profondeur moyenne
         return (double) profondeursEtFeuilles[0] / profondeursEtFeuilles[1];
     }
 
-    // Fonction récursive pour calculer la profondeur moyenne des feuilles
     private int[] calculerProfondeursEtFeuilles(Noeud noeud, int profondeur) {
-        int[] result = new int[]{0, 0}; // Tableau pour stocker la somme des profondeurs et le nombre de feuilles
+        int[] result = new int[]{0, 0}; 
         
         if (noeud == null) {
             return result;
         }
 
-        // Si le nœud actuel est une feuille, mettre à jour la somme des profondeurs et le nombre de feuilles
         if (noeud.caractere == '\0') {
             result[0] += profondeur;
             result[1]++;
         }
 
-        // Parcourir récursivement les fils et les frères avec une profondeur augmentée de 1
         int[] profondeursEtFeuillesFils = calculerProfondeursEtFeuilles(noeud.fils, profondeur + 1);
         int[] profondeursEtFeuillesFrere = calculerProfondeursEtFeuilles(noeud.frere, profondeur);
 
-        // Ajouter les résultats des fils et des frères
         result[0] += profondeursEtFeuillesFils[0] + profondeursEtFeuillesFrere[0];
         result[1] += profondeursEtFeuillesFils[1] + profondeursEtFeuillesFrere[1];
 
@@ -196,87 +174,114 @@ public class Briandais {
         return compterMotsAvecPrefixe(racine, mot);
     }
 
-    // Fonction récursive pour compter le nombre de mots ayant le préfixe 
     private int compterMotsAvecPrefixe(Noeud noeud, String mot) {
         if (noeud == null || mot.isEmpty()) {
             return 0; 
         }
         
-        char premierCaractere = mot.charAt(0);
-        
-        if (premierCaractere < noeud.caractere) {
+        if (premier(mot) < noeud.caractere) {
             return compterMotsAvecPrefixe(noeud.fils, mot); 
-        } else if (premierCaractere > noeud.caractere) {
+        } else if (premier(mot) > noeud.caractere) {
             return compterMotsAvecPrefixe(noeud.frere, mot); 
         } else {
-            String resteMot = mot.substring(1);
-            if (resteMot.isEmpty()) {
-                return comptageMots(noeud);
+            if (reste(mot).isEmpty()) {
+                return BRDcomptageMots(noeud);
             } else {
-                return compterMotsAvecPrefixe(noeud.fils, resteMot);
+                return compterMotsAvecPrefixe(noeud.fils, reste(mot));
             }
         }
     }
 
-    public Noeud suppression(String m){
-        return rec_suppression(this.racine, m);
+    public void suppression(String m){
+        racine = BRDsuppression(this.racine, m);
     }
 
 
-    public Noeud rec_suppression(Noeud A, String m) {
+    public Noeud BRDsuppression(Noeud A, String m) {
         if (m.isEmpty()) return A.frere;
         
-        if (comptageMots(A) == 1) return null;
+        if (BRDcomptageMots(A) == 1) return null;
 
         if (A.caractere < premier(m)) {
-            // Si la clé de A est inférieure à t, aller vers le frère de A
-            return new Noeud(A.caractere, A.fils, rec_suppression(A.frere, m));
+            return new Noeud(A.caractere, A.fils, BRDsuppression(A.frere, m));
         } else {
-            // Sinon, si la clé de A est égale à t
-            // Supprimer récursivement le reste de m dans le fils de A
-            return new Noeud(A.caractere, rec_suppression(A.fils, reste(m)), A.frere);
+            return new Noeud(A.caractere, BRDsuppression(A.fils, reste(m)), A.frere);
         }
     }
-    
-    
-    public static void main(String[] args) {
-        Briandais trie = new Briandais();
 
-        String exemple_de_base = "A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches du clavier de la machine a ecrire ?";
-        
+    private void insertionPhrase(String phrase) {
         // Séparer le texte en mots et les insérer dans l'arbre
-        /*String[] mots = exemple_de_base.split("\\s+|(?=,)|(?<=,)");
+        String[] mots = phrase.split("\\s+|(?=,)|(?<=,)");
         Set<String> setSansDoublons = new LinkedHashSet<>();
         for (String mot : mots) {
             // Ajout du mot au set, les doublons seront ignorés
             setSansDoublons.add(mot);
         }
         for (String mot : setSansDoublons) {
-            trie.inserer(mot);
-            System.out.println(mot);
+            this.inserer(mot);
+            //System.out.println(mot);
 
         }
-        System.out.println("taille " + setSansDoublons.size());*/
+        //System.out.println("taille " + setSansDoublons.size());
+    }
+
+    public void fusion(Briandais autre) {
+        if (autre != null && autre.racine != null) {
+            this.racine = BRDfusion(this.racine, autre.racine);
+        }
+    }
+    
+    private Noeud BRDfusion(Noeud noeud1, Noeud noeud2) {
+        if (noeud1 == null) return noeud2;
+        if (noeud2 == null) return noeud1;
+    
+        if (noeud1.caractere < noeud2.caractere) {
+            noeud1.frere = BRDfusion(noeud1.frere, noeud2);
+            return noeud1;
+        }
+        else if (noeud1.caractere > noeud2.caractere) {
+            noeud2.frere = BRDfusion(noeud1, noeud2.frere);
+            return noeud2;
+        }
+        else {
+            noeud1.fils = BRDfusion(noeud1.fils, noeud2.fils);
+            noeud1.frere = BRDfusion(noeud1.frere, noeud2.frere);
+            return noeud1;
+        }
+    }
+    
+    
+
+
+    
+    
+    public static void main(String[] args) {
+        Briandais trie = new Briandais();
+
+        String exemple_de_base = "A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches du clavier de la machine a ecrire ?";
+        trie.insertionPhrase(exemple_de_base);
+
+
 
 
         Briandais trie2 = new Briandais();
-        trie2.inserer("test6");
-        trie2.inserer("abc");
-        trie2.inserer("abc1");
-        trie2.inserer("test");
-        trie2.inserer("testtcjs");trie2.inserer("testvdfv");trie2.inserer("testdsf");
+        trie2.inserer("test2");
+        trie2.inserer("abc2");
 
-
-        System.out.println(trie2.comptageMots());
+        Briandais trie3 = new Briandais();
+        trie3.inserer("test1");
+        trie3.inserer("abc3");
+        trie3.inserer("abc");
+        
+        trie2.fusion(trie3);
+        
 
         List<String> liste = trie2.listeMots();
         for(String mot : liste){
             System.out.println(mot);
         }
 
-        System.out.println(trie2.recherche("abc1")); 
-        trie2.racine = trie2.suppression("abc1");
-        System.out.println(trie2.recherche("abc1")); 
+        
 
 
         
