@@ -6,4 +6,4 @@ Ce projet vise à implémenter et comparer deux structures de données concurren
 
 ### Autheurs :
 - [Florian CODEBECQ](https://github.com/CFlorian04)
-- [Ngoc Anh NGUYEN]()
+- [Ngoc Anh NGUYEN](https://github.com/Anh1106)
