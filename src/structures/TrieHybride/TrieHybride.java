@@ -160,7 +160,7 @@ public class TrieHybride {
         }
 
         // Parcours in-order
-        HYBListeMots(noeud.gauche, motActuel, motsListe);
+        HYBListeMots(noeud.droit, motActuel, motsListe);
 
         // Ajout du caractère du nœud au mot actuel
         String nouveauMotActuel = motActuel + noeud.caractere;
@@ -174,7 +174,7 @@ public class TrieHybride {
         HYBListeMots(noeud.centre, nouveauMotActuel, motsListe);
 
         // Parcours in-order du sous-arbre droit
-        HYBListeMots(noeud.droit, motActuel, motsListe);
+        HYBListeMots(noeud.gauche, motActuel, motsListe);
     }
 
     public int comptageNil() {
