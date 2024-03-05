@@ -2,6 +2,9 @@ package structures.Briandais;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import structures.TrieHybride.HYBNoeud;
+import structures.TrieHybride.TrieHybride;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -248,6 +251,35 @@ public class Briandais {
             noeud1.frere = BRDfusion(noeud1.frere, noeud2.frere);
             return noeud1;
         }
+    }
+
+    public TrieHybride conversion(){
+        TrieHybride trie = new TrieHybride();
+        trie.racine = BRDconversion(racine);
+        return trie;
+    }
+
+    public HYBNoeud BRDconversion(BRDNoeud BRD){
+        HYBNoeud racine = new HYBNoeud('\0');
+        if (BRD.frere != null) {
+            racine.droit = BRDconversion(BRD.frere);
+        }
+
+        if (BRD.caractere != '\0') {
+            racine.caractere = BRD.caractere;
+        }
+
+        if (BRD.fils != null && BRD.fils.caractere == '\0'){
+            racine.finMot = true;
+            if(BRD.fils.frere != null){
+                racine.centre = BRDconversion(BRD.fils.frere);
+            } else {
+                if (BRD.fils != null) {
+                    racine.centre = BRDconversion(BRD.fils);
+                }
+            }
+        } 
+        return racine;
     }
     
     
