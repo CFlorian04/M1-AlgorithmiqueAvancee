@@ -174,7 +174,7 @@ public class TrieHybride {
         HYBListeMots(noeud.centre, nouveauMotActuel, motsListe);
 
         // Parcours in-order du sous-arbre droit
-        HYBListeMots(noeud.droit, nouveauMotActuel, motsListe);
+        HYBListeMots(noeud.droit, motActuel, motsListe);
     }
 
     public int comptageNil() {
