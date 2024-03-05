@@ -1,3 +1,5 @@
 https://github.com/Shaolans/Projet_ALGAV_trie
 https://github.com/ApurvPatki1703/Tries
 https://www-apr.lip6.fr/~genitrini/js/Huffman/HybridTrie.html
+https://www.cs.usfca.edu/~galles/visualization/Algorithms.html
+https://www.cs.usfca.edu/~galles/visualization/source.html
