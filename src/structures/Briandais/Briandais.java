@@ -8,22 +8,22 @@ import java.util.List;
 
 public class Briandais {
 
-    private Noeud racine;
+    private BRDNoeud racine;
 
     public Briandais() {
-        this.racine = new Noeud('\0'); 
+        this.racine = new BRDNoeud('\0'); 
     }
 
-    public Briandais(char caractere, Noeud fils, Noeud frere){
-        this.racine = new Noeud(caractere, fils, frere);
+    public Briandais(char caractere, BRDNoeud fils, BRDNoeud frere){
+        this.racine = new BRDNoeud(caractere, fils, frere);
     }
     public void inserer(String mot) {
         racine = BRDinsertion(racine, mot);
     }
 
-    private Noeud BRDinsertion(Noeud A, String m) {
+    private BRDNoeud BRDinsertion(BRDNoeud A, String m) {
         if (m.equals("")) {
-            return new Noeud('\0', null, A); 
+            return new BRDNoeud('\0', null, A); 
         }
         if (A == null) {
             return BRDcons(m);
@@ -38,16 +38,16 @@ public class Briandais {
             return A;
         }
         if (A.caractere > t) {
-            return new Noeud(t, BRDcons(reste(m)), A);
+            return new BRDNoeud(t, BRDcons(reste(m)), A);
         }
         return A; 
     }
 
-    private Noeud BRDcons(String m) {
+    private BRDNoeud BRDcons(String m) {
         if (m.equals("")) {
-            return new Noeud('\0', null, null); 
+            return new BRDNoeud('\0', null, null); 
         } else {
-            return new Noeud(premier(m), BRDcons(reste(m)), null);
+            return new BRDNoeud(premier(m), BRDcons(reste(m)), null);
         }
     }
 
@@ -65,7 +65,7 @@ public class Briandais {
     }
 
     
-    private boolean BRDrecherche(Noeud noeud, String mot) {
+    private boolean BRDrecherche(BRDNoeud noeud, String mot) {
         if (mot.isEmpty()) return true; 
         
         if (noeud == null) return false; 
@@ -83,7 +83,7 @@ public class Briandais {
         return BRDcomptageMots(this.racine);
     }
 
-    private int BRDcomptageMots(Noeud noeud) {
+    private int BRDcomptageMots(BRDNoeud noeud) {
         if (noeud == null) return 0;
         
         int compteur = 0;
@@ -103,7 +103,7 @@ public class Briandais {
         return mots;
     }
 
-    private void BRDlisteMots(Noeud noeud, String motCourant, List<String> mots) {
+    private void BRDlisteMots(BRDNoeud noeud, String motCourant, List<String> mots) {
         if (noeud == null) return;
 
         if (noeud.caractere == '\0') {
@@ -118,7 +118,7 @@ public class Briandais {
         return BRDcomptageNil(racine);
     }
 
-    private int BRDcomptageNil(Noeud noeud) {
+    private int BRDcomptageNil(BRDNoeud noeud) {
         if (noeud == null) return 1; 
 
         int compteur = 0;
@@ -132,7 +132,7 @@ public class Briandais {
         return BRDhauteur(racine);
     }
 
-    private int BRDhauteur(Noeud noeud) {
+    private int BRDhauteur(BRDNoeud noeud) {
         if (noeud == null) return 0;
 
         int hauteurFils = BRDhauteur(noeud.fils);
@@ -149,7 +149,7 @@ public class Briandais {
         return (double) profondeursEtFeuilles[0] / profondeursEtFeuilles[1];
     }
 
-    private int[] calculerProfondeursEtFeuilles(Noeud noeud, int profondeur) {
+    private int[] calculerProfondeursEtFeuilles(BRDNoeud noeud, int profondeur) {
         int[] result = new int[]{0, 0}; 
         
         if (noeud == null) {
@@ -174,7 +174,7 @@ public class Briandais {
         return compterMotsAvecPrefixe(racine, mot);
     }
 
-    private int compterMotsAvecPrefixe(Noeud noeud, String mot) {
+    private int compterMotsAvecPrefixe(BRDNoeud noeud, String mot) {
         if (noeud == null || mot.isEmpty()) {
             return 0; 
         }
@@ -197,15 +197,15 @@ public class Briandais {
     }
 
 
-    public Noeud BRDsuppression(Noeud A, String m) {
+    public BRDNoeud BRDsuppression(BRDNoeud A, String m) {
         if (m.isEmpty()) return A.frere;
         
         if (BRDcomptageMots(A) == 1) return null;
 
         if (A.caractere < premier(m)) {
-            return new Noeud(A.caractere, A.fils, BRDsuppression(A.frere, m));
+            return new BRDNoeud(A.caractere, A.fils, BRDsuppression(A.frere, m));
         } else {
-            return new Noeud(A.caractere, BRDsuppression(A.fils, reste(m)), A.frere);
+            return new BRDNoeud(A.caractere, BRDsuppression(A.fils, reste(m)), A.frere);
         }
     }
 
@@ -231,7 +231,7 @@ public class Briandais {
         }
     }
     
-    private Noeud BRDfusion(Noeud noeud1, Noeud noeud2) {
+    private BRDNoeud BRDfusion(BRDNoeud noeud1, BRDNoeud noeud2) {
         if (noeud1 == null) return noeud2;
         if (noeud2 == null) return noeud1;
     

@@ -7,20 +7,20 @@ import java.util.List;
 import java.util.Set;
 
 import structures.Briandais.Briandais;
-import structures.TrieHybride.Noeud;
+import structures.TrieHybride.HYBNoeud;
 
 public class TrieHybride {
 
-    private Noeud racine;
+    private HYBNoeud racine;
 
     ///////////////////
     // Constructeurs //
     ///////////////////
     public TrieHybride() {
-        this.racine = new Noeud('\0');
+        this.racine = new HYBNoeud('\0');
     }
 
-    public TrieHybride(Noeud racine) {
+    public TrieHybride(HYBNoeud racine) {
         this.racine = racine;
     }
 
@@ -43,7 +43,7 @@ public class TrieHybride {
         this.racine = HYBInsertion(racine, formatText(mot));
     }
 
-    private Noeud HYBInsertion(Noeud noeud, String mot) {
+    private HYBNoeud HYBInsertion(HYBNoeud noeud, String mot) {
         if (mot.length() == 0) {
             return noeud;
         }
@@ -91,11 +91,11 @@ public class TrieHybride {
         return noeud;
     }
 
-    private Noeud HYBConstruct(String mot) {
+    private HYBNoeud HYBConstruct(String mot) {
         if (mot.length() == 0) {
-            return new Noeud('\0', null, null, null, true);
+            return new HYBNoeud('\0', null, null, null, true);
         } else {
-            return new Noeud(first(mot), null, HYBConstruct(rest(mot)), null, false);
+            return new HYBNoeud(first(mot), null, HYBConstruct(rest(mot)), null, false);
         }
     }
 
@@ -103,7 +103,7 @@ public class TrieHybride {
         return HYBRecherche(this.racine, formatText(mot));
     }
 
-    private Boolean HYBRecherche(Noeud noeud, String mot) {
+    private Boolean HYBRecherche(HYBNoeud noeud, String mot) {
         if (mot.isEmpty()) {
             return true;
         }
@@ -130,7 +130,7 @@ public class TrieHybride {
         return HYBComptageMots(this.racine);
     }
 
-    private int HYBComptageMots(Noeud noeud) {
+    private int HYBComptageMots(HYBNoeud noeud) {
         if (noeud == null) {
             return 0;
         }
@@ -156,7 +156,7 @@ public class TrieHybride {
         return motsListe;
     }
     
-    private void HYBListeMots(Noeud noeud, String motActuel, List<String> motsListe) {
+    private void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
         if (noeud == null) {
             return;
         }
@@ -183,7 +183,7 @@ public class TrieHybride {
         return HYBComptageNil(this.racine);
     }
 
-    private int HYBComptageNil(Noeud noeud) {
+    private int HYBComptageNil(HYBNoeud noeud) {
         if (noeud == null) {
             return 1;
         }
@@ -201,7 +201,7 @@ public class TrieHybride {
         return HYBHauteur(this.racine);
     }
 
-    private int HYBHauteur(Noeud noeud) {
+    private int HYBHauteur(HYBNoeud noeud) {
         if (noeud == null) {
             return 0;
         }
@@ -217,7 +217,7 @@ public class TrieHybride {
         return HYBprofondeurMoyenne(this.racine, 0);
     }
 
-    private double HYBprofondeurMoyenne(Noeud noeud, int profondeur) {
+    private double HYBprofondeurMoyenne(HYBNoeud noeud, int profondeur) {
         if (noeud == null) {
             return 0;
         }
@@ -251,7 +251,7 @@ public class TrieHybride {
         return HYBPrefixe(this.racine, mot, 0);
     }
 
-    private int HYBPrefixe(Noeud noeud, String mot, int index) {
+    private int HYBPrefixe(HYBNoeud noeud, String mot, int index) {
         if (noeud == null || index == mot.length()) {
             return 0;
         }
@@ -276,7 +276,7 @@ public class TrieHybride {
         this.racine = HYBSuppression(this.racine, formatText(mot), 0);
     }
 
-    private Noeud HYBSuppression(Noeud noeud, String mot, int index) {
+    private HYBNoeud HYBSuppression(HYBNoeud noeud, String mot, int index) {
         if (noeud == null) {
             return null;
         }
@@ -306,7 +306,7 @@ public class TrieHybride {
         this.racine = HYBEquilibrer(this.racine);
     }
     
-    private Noeud HYBEquilibrer(Noeud noeud) {
+    private HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
         if (noeud == null) {
             return null;
         }
@@ -323,7 +323,7 @@ public class TrieHybride {
     
         // Rééquilibrage avec rotation droite
         if (hauteurGauche - hauteurCentre > 1) {
-            Noeud nouveauNoeud = noeud.gauche;
+            HYBNoeud nouveauNoeud = noeud.gauche;
             noeud.gauche = nouveauNoeud.droit;
             nouveauNoeud.droit = noeud;
             noeud = nouveauNoeud;
@@ -331,7 +331,7 @@ public class TrieHybride {
     
         // Rééquilibrage avec rotation gauche
         if (hauteurDroit - hauteurCentre > 1) {
-            Noeud nouveauNoeud = noeud.droit;
+            HYBNoeud nouveauNoeud = noeud.droit;
             noeud.droit = nouveauNoeud.gauche;
             nouveauNoeud.gauche = noeud;
             noeud = nouveauNoeud;

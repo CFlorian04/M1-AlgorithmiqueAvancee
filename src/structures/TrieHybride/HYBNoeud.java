@@ -1,12 +1,12 @@
 package structures.TrieHybride;
 
-public class Noeud {
+public class HYBNoeud {
 
     public char caractere;
-    public Noeud droit, centre, gauche;
+    public HYBNoeud droit, centre, gauche;
     public boolean finMot;
 
-    public Noeud(char caractere) {
+    public HYBNoeud(char caractere) {
         this.caractere = caractere;
         this.gauche = null;
         this.centre = null;
@@ -14,7 +14,7 @@ public class Noeud {
         this.finMot = false;
     }
 
-    public Noeud(char caractere, Noeud gauche, Noeud centre, Noeud droit, Boolean finMot) {
+    public HYBNoeud(char caractere, HYBNoeud gauche, HYBNoeud centre, HYBNoeud droit, Boolean finMot) {
         this.caractere = caractere;
         this.gauche = gauche;
         this.centre = centre;
