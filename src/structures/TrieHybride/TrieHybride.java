@@ -344,7 +344,7 @@ public class TrieHybride {
         return new Briandais();
     }
 
-    // QUESTION 1.0.5
+    // QUESTION 1.0.5 - Insertion de la phrase de base
     public void insertFromFile(String path, boolean showWordsList, boolean showStats) {
         File file = new File(path);
         try (Scanner fileIn = new Scanner(new File(file.getAbsolutePath()))) {
@@ -379,6 +379,7 @@ public class TrieHybride {
 
     }
 
+    // QUESTION 5.0.11 - Insertion des oeuvres de Shakespeare
     public void insertShakespeare(boolean showWordsList, boolean showStats) {
         File[] listOfFiles = new File("data/Shakespeare").listFiles();
 
