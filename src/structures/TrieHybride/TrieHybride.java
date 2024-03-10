@@ -1,13 +1,15 @@
 package structures.TrieHybride;
 
-import java.lang.reflect.Array;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
+import structures.Briandais.BRDNoeud;
 import structures.Briandais.Briandais;
-import structures.TrieHybride.HYBNoeud;
 
 public class TrieHybride {
 
@@ -155,14 +157,16 @@ public class TrieHybride {
         HYBListeMots(this.racine, "", motsListe);
         return motsListe;
     }
-    
-    public void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
+
+
+    private void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
+
         if (noeud == null) {
             return;
         }
 
         // Parcours in-order
-        HYBListeMots(noeud.gauche, motActuel, motsListe);
+        HYBListeMots(noeud.droit, motActuel, motsListe);
 
         // Ajout du caractère du nœud au mot actuel
         String nouveauMotActuel = motActuel + noeud.caractere;
@@ -176,7 +180,7 @@ public class TrieHybride {
         HYBListeMots(noeud.centre, nouveauMotActuel, motsListe);
 
         // Parcours in-order du sous-arbre droit
-        HYBListeMots(noeud.droit, nouveauMotActuel, motsListe);
+        HYBListeMots(noeud.gauche, motActuel, motsListe);
     }
 
     public int comptageNil() {
@@ -271,6 +275,7 @@ public class TrieHybride {
         }
     }
 
+
     public void suppression(String mot)
     {
         this.racine = HYBSuppression(this.racine, formatText(mot), 0);
@@ -305,22 +310,23 @@ public class TrieHybride {
     public void equilibrer() {
         this.racine = HYBEquilibrer(this.racine);
     }
-    
-    public HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
+
+    private HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
+
         if (noeud == null) {
             return null;
         }
-    
+
         // Rééquilibrage des sous-arbres gauche, centre et droit
         noeud.gauche = HYBEquilibrer(noeud.gauche);
         noeud.centre = HYBEquilibrer(noeud.centre);
         noeud.droit = HYBEquilibrer(noeud.droit);
-    
+
         // Calcul de la hauteur des sous-arbres gauche, centre et droit
         int hauteurGauche = HYBHauteur(noeud.gauche);
         int hauteurCentre = HYBHauteur(noeud.centre);
         int hauteurDroit = HYBHauteur(noeud.droit);
-    
+
         // Rééquilibrage avec rotation droite
         if (hauteurGauche - hauteurCentre > 1) {
             HYBNoeud nouveauNoeud = noeud.gauche;
@@ -328,7 +334,7 @@ public class TrieHybride {
             nouveauNoeud.droit = noeud;
             noeud = nouveauNoeud;
         }
-    
+
         // Rééquilibrage avec rotation gauche
         if (hauteurDroit - hauteurCentre > 1) {
             HYBNoeud nouveauNoeud = noeud.droit;
@@ -336,27 +342,90 @@ public class TrieHybride {
             nouveauNoeud.gauche = noeud;
             noeud = nouveauNoeud;
         }
-    
+
         return noeud;
     }
 
+    public Briandais toBRD() {
+        Briandais briandais = new Briandais();
+        return briandais;
+    }
 
-    // QUESTION 1.0.5
-    // Récupéré de Anh
-    public void insertionPhrase(String phrase) {
-        // Séparer le texte en mots et les insérer dans l'arbre
-        String[] mots = phrase.split("\\s+|(?=,)|(?<=,)");
-        Set<String> setSansDoublons = new LinkedHashSet<>();
-        for (String mot : mots) {
-            // Ajout du mot au set, les doublons seront ignorés
-            setSansDoublons.add(mot);
-        }
-        for (String mot : setSansDoublons) {
-            this.insertion(mot);
-            //System.out.println(mot);
 
+    // QUESTION 1.0.5 - Insertion de la phrase de base
+    public void insertFromFile(String path, boolean showWordsList, boolean showStats) {
+        File file = new File(path);
+        try (Scanner fileIn = new Scanner(new File(file.getAbsolutePath()))) {
+            while (fileIn.hasNext()) {
+                String mot = formatText(fileIn.next());
+                if (mot != null && mot != "") {
+                    if (!this.recherhe(mot)) {
+                        this.insertion(mot);
+                    }
+                }
+            }
+            fileIn.close();
+
+            if (showWordsList) {
+                List<String> motsListe = this.listeMots();
+                for (String mots : motsListe) {
+                    System.out.println(mots);
+                }
+            }
+
+            if (showStats) {
+                System.out.println("Profondeur moyenne : " + this.profondeurMoyenne());
+                System.out.println("Hauteur : " + this.hauteur());
+                System.out.println("Nombre de mots : " + this.comptageMots());
+                System.out.println("Nombre de noeuds nuls : " + this.comptageNil());
+            }
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        //System.out.println("taille " + setSansDoublons.size());
+
+    }
+
+    // QUESTION 5.0.11 - Insertion des oeuvres de Shakespeare
+    public void insertShakespeare(boolean showWordsList, boolean showStats) {
+        File[] listOfFiles = new File("data/Shakespeare").listFiles();
+
+        for (File file : listOfFiles) {
+            try {
+                try {
+                    Scanner fileIn = new Scanner(new File(file.getAbsolutePath()));
+                    while (fileIn.hasNextLine()) {
+                        String mot = formatText(fileIn.nextLine());
+                        if (mot != null && mot != "") {
+                            if (!this.recherhe(mot)) {
+                                this.insertion(mot);
+                            }
+                        }
+                    }
+                    fileIn.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (showWordsList) {
+            List<String> motsListe = this.listeMots();
+            for (String mots : motsListe) {
+                System.out.println(mots);
+            }
+        }
+
+        if (showStats) {
+            System.out.println("Profondeur moyenne : " + this.profondeurMoyenne());
+            System.out.println("Hauteur : " + this.hauteur());
+            System.out.println("Nombre de mots : " + this.comptageMots());
+            System.out.println("Nombre de noeuds nuls : " + this.comptageNil());
+        }
+
     }
 
     public static void main(String[] args) {
@@ -368,9 +437,7 @@ public class TrieHybride {
         // trieHybride.insertion("poil");
         // trieHybride.insertion("pollution");
         // trieHybride.insertion("porte");
-
-        trieHybride.insertionPhrase("A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches duclavier de la machine a ecrire ?");
-
+        
         trieHybride.equilibrer();
 
         System.out.println(trieHybride.hauteur());
@@ -380,8 +447,6 @@ public class TrieHybride {
         for (String mot : motsListe) {
             System.out.println(mot);
         }
-        
-
 
     }
 
