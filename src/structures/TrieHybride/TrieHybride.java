@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import structures.Briandais.BRDNoeud;
 import structures.Briandais.Briandais;
-import structures.TrieHybride.HYBNoeud;
 
 public class TrieHybride {
 
@@ -159,13 +159,13 @@ public class TrieHybride {
         return motsListe;
     }
 
-    public void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
+    private void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
         if (noeud == null) {
             return;
         }
 
         // Parcours in-order
-        HYBListeMots(noeud.gauche, motActuel, motsListe);
+        HYBListeMots(noeud.droit, motActuel, motsListe);
 
         // Ajout du caractère du nœud au mot actuel
         String nouveauMotActuel = motActuel + noeud.caractere;
@@ -179,7 +179,7 @@ public class TrieHybride {
         HYBListeMots(noeud.centre, nouveauMotActuel, motsListe);
 
         // Parcours in-order du sous-arbre droit
-        HYBListeMots(noeud.droit, nouveauMotActuel, motsListe);
+        HYBListeMots(noeud.gauche, motActuel, motsListe);
     }
 
     public int comptageNil() {
@@ -308,7 +308,8 @@ public class TrieHybride {
         this.racine = HYBEquilibrer(this.racine);
     }
 
-    public HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
+    private HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
+
         if (noeud == null) {
             return null;
         }
@@ -342,36 +343,44 @@ public class TrieHybride {
         return noeud;
     }
 
+    public Briandais toBRD() {
+        Briandais briandais = new Briandais();
+        return briandais;
+    }
+
     // QUESTION 1.0.5 - Insertion de la phrase de base
     public void insertFromFile(String path, boolean showWordsList, boolean showStats) {
         File file = new File(path);
-        try (Scanner fileIn = new Scanner(file)) {
+        try (Scanner fileIn = new Scanner(new File(file.getAbsolutePath()))) {
             while (fileIn.hasNext()) {
                 String mot = formatText(fileIn.next());
-                if (mot != null && !mot.isEmpty()) {
-                    if (!recherche(mot)) {
-                        insertion(mot);
+                if (mot != null && mot != "") {
+                    if (!this.recherche(mot)) {
+                        this.insertion(mot);
                     }
                 }
             }
+            fileIn.close();
 
             if (showWordsList) {
-                List<String> motsListe = listeMots();
+                List<String> motsListe = this.listeMots();
                 for (String mots : motsListe) {
                     System.out.println(mots);
                 }
             }
 
             if (showStats) {
-                System.out.println("Profondeur moyenne : " + profondeurMoyenne());
-                System.out.println("Hauteur : " + hauteur());
-                System.out.println("Nombre de mots : " + comptageMots());
-                System.out.println("Nombre de noeuds nuls : " + comptageNil());
+                System.out.println("Profondeur moyenne : " + this.profondeurMoyenne());
+                System.out.println("Hauteur : " + this.hauteur());
+                System.out.println("Nombre de mots : " + this.comptageMots());
+                System.out.println("Nombre de noeuds nuls : " + this.comptageNil());
             }
 
         } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
     // QUESTION 5.0.11 - Insertion des oeuvres de Shakespeare
@@ -380,34 +389,39 @@ public class TrieHybride {
 
         for (File file : listOfFiles) {
             try {
-                Scanner fileIn = new Scanner(file);
-                while (fileIn.hasNextLine()) {
-                    String mot = formatText(fileIn.nextLine());
-                    if (mot != null && !mot.isEmpty()) {
-                        if (!recherche(mot)) {
-                            insertion(mot);
+                try {
+                    Scanner fileIn = new Scanner(new File(file.getAbsolutePath()));
+                    while (fileIn.hasNextLine()) {
+                        String mot = formatText(fileIn.nextLine());
+                        if (mot != null && mot != "") {
+                            if (!this.recherche(mot)) {
+                                this.insertion(mot);
+                            }
                         }
                     }
+                    fileIn.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
-                fileIn.close();
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         if (showWordsList) {
-            List<String> motsListe = listeMots();
+            List<String> motsListe = this.listeMots();
             for (String mots : motsListe) {
                 System.out.println(mots);
             }
         }
 
         if (showStats) {
-            System.out.println("Profondeur moyenne : " + profondeurMoyenne());
-            System.out.println("Hauteur : " + hauteur());
-            System.out.println("Nombre de mots : " + comptageMots());
-            System.out.println("Nombre de noeuds nuls : " + comptageNil());
+            System.out.println("Profondeur moyenne : " + this.profondeurMoyenne());
+            System.out.println("Hauteur : " + this.hauteur());
+            System.out.println("Nombre de mots : " + this.comptageMots());
+            System.out.println("Nombre de noeuds nuls : " + this.comptageNil());
         }
+
     }
 
     public static void main(String[] args) {
