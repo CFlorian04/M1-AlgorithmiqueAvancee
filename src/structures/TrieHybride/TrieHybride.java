@@ -11,7 +11,7 @@ import structures.TrieHybride.HYBNoeud;
 
 public class TrieHybride {
 
-    private HYBNoeud racine;
+    public HYBNoeud racine;
 
     ///////////////////
     // Constructeurs //
@@ -25,25 +25,25 @@ public class TrieHybride {
     }
 
     // Retourne le premier caractère
-    private char first(String mot) {
+    public char first(String mot) {
         return mot.charAt(0);
     }
 
     // Retoune tous les caractères sauf le premier
-    private String rest(String mot) {
+    public String rest(String mot) {
         return mot.substring(1);
     }
 
     // Garde que les lettres et les mets en minuscule
-    private static String formatText(String mot) {
+    public static String formatText(String mot) {
         return mot.toLowerCase().replaceAll("[^a-z]", "");
     }
 
-    private void insertion(String mot) {
+    public void insertion(String mot) {
         this.racine = HYBInsertion(racine, formatText(mot));
     }
 
-    private HYBNoeud HYBInsertion(HYBNoeud noeud, String mot) {
+    public HYBNoeud HYBInsertion(HYBNoeud noeud, String mot) {
         if (mot.length() == 0) {
             return noeud;
         }
@@ -91,7 +91,7 @@ public class TrieHybride {
         return noeud;
     }
 
-    private HYBNoeud HYBConstruct(String mot) {
+    public HYBNoeud HYBConstruct(String mot) {
         if (mot.length() == 0) {
             return new HYBNoeud('\0', null, null, null, true);
         } else {
@@ -99,11 +99,11 @@ public class TrieHybride {
         }
     }
 
-    private boolean recherhe(String mot) {
+    public boolean recherhe(String mot) {
         return HYBRecherche(this.racine, formatText(mot));
     }
 
-    private Boolean HYBRecherche(HYBNoeud noeud, String mot) {
+    public Boolean HYBRecherche(HYBNoeud noeud, String mot) {
         if (mot.isEmpty()) {
             return true;
         }
@@ -126,11 +126,11 @@ public class TrieHybride {
         }
     }
 
-    private int comptageMots() {
+    public int comptageMots() {
         return HYBComptageMots(this.racine);
     }
 
-    private int HYBComptageMots(HYBNoeud noeud) {
+    public int HYBComptageMots(HYBNoeud noeud) {
         if (noeud == null) {
             return 0;
         }
@@ -150,13 +150,13 @@ public class TrieHybride {
 
     }
 
-    private List<String> listeMots() {
+    public List<String> listeMots() {
         List<String> motsListe = new ArrayList<>();
         HYBListeMots(this.racine, "", motsListe);
         return motsListe;
     }
     
-    private void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
+    public void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
         if (noeud == null) {
             return;
         }
@@ -179,11 +179,11 @@ public class TrieHybride {
         HYBListeMots(noeud.droit, nouveauMotActuel, motsListe);
     }
 
-    private int comptageNil() {
+    public int comptageNil() {
         return HYBComptageNil(this.racine);
     }
 
-    private int HYBComptageNil(HYBNoeud noeud) {
+    public int HYBComptageNil(HYBNoeud noeud) {
         if (noeud == null) {
             return 1;
         }
@@ -197,11 +197,11 @@ public class TrieHybride {
         return count;
     }
 
-    private int hauteur() {
+    public int hauteur() {
         return HYBHauteur(this.racine);
     }
 
-    private int HYBHauteur(HYBNoeud noeud) {
+    public int HYBHauteur(HYBNoeud noeud) {
         if (noeud == null) {
             return 0;
         }
@@ -213,11 +213,11 @@ public class TrieHybride {
         return 1 + Math.max(Math.max(hauteurGauche, hauteurCentre), hauteurDroit);
     }
 
-    private double profondeurMoyenne() {
+    public double profondeurMoyenne() {
         return HYBprofondeurMoyenne(this.racine, 0);
     }
 
-    private double HYBprofondeurMoyenne(HYBNoeud noeud, int profondeur) {
+    public double HYBprofondeurMoyenne(HYBNoeud noeud, int profondeur) {
         if (noeud == null) {
             return 0;
         }
@@ -247,11 +247,11 @@ public class TrieHybride {
         return sum / count;
     }
 
-    private int prefixe(String mot) {
+    public int prefixe(String mot) {
         return HYBPrefixe(this.racine, mot, 0);
     }
 
-    private int HYBPrefixe(HYBNoeud noeud, String mot, int index) {
+    public int HYBPrefixe(HYBNoeud noeud, String mot, int index) {
         if (noeud == null || index == mot.length()) {
             return 0;
         }
@@ -271,12 +271,12 @@ public class TrieHybride {
         }
     }
 
-    private void suppression(String mot)
+    public void suppression(String mot)
     {
         this.racine = HYBSuppression(this.racine, formatText(mot), 0);
     }
 
-    private HYBNoeud HYBSuppression(HYBNoeud noeud, String mot, int index) {
+    public HYBNoeud HYBSuppression(HYBNoeud noeud, String mot, int index) {
         if (noeud == null) {
             return null;
         }
@@ -302,11 +302,11 @@ public class TrieHybride {
         return noeud;
     }
 
-    private void equilibrer() {
+    public void equilibrer() {
         this.racine = HYBEquilibrer(this.racine);
     }
     
-    private HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
+    public HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
         if (noeud == null) {
             return null;
         }
@@ -343,7 +343,7 @@ public class TrieHybride {
 
     // QUESTION 1.0.5
     // Récupéré de Anh
-    private void insertionPhrase(String phrase) {
+    public void insertionPhrase(String phrase) {
         // Séparer le texte en mots et les insérer dans l'arbre
         String[] mots = phrase.split("\\s+|(?=,)|(?<=,)");
         Set<String> setSansDoublons = new LinkedHashSet<>();
