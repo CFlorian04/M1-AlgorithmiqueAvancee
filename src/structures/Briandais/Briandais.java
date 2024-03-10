@@ -5,8 +5,11 @@ import java.util.Set;
 import structures.TrieHybride.HYBNoeud;
 import structures.TrieHybride.TrieHybride;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class Briandais {
@@ -26,7 +29,14 @@ public class Briandais {
 
     private BRDNoeud BRDinsertion(BRDNoeud A, String m) {
         if (m.equals("")) {
-            return new BRDNoeud('\0', null, A); 
+            if (A == null) {
+                return new BRDNoeud('\0');
+            } else {
+                if (A.caractere != '\0') {
+                    return new BRDNoeud('\0', null, A);
+                }
+                return A;
+            }
         }
         if (A == null) {
             return BRDcons(m);
@@ -43,8 +53,9 @@ public class Briandais {
         if (A.caractere > t) {
             return new BRDNoeud(t, BRDcons(reste(m)), A);
         }
-        return A; 
+        return A;
     }
+    
 
     private BRDNoeud BRDcons(String m) {
         if (m.equals("")) {
@@ -83,7 +94,7 @@ public class Briandais {
 
 
     public int comptageMots() {
-        return BRDcomptageMots(this.racine);
+        return BRDcomptageMots(this.racine) - 1;
     }
 
     private int BRDcomptageMots(BRDNoeud noeud) {
@@ -288,7 +299,7 @@ public class Briandais {
     
     
     public static void main(String[] args) {
-        Briandais trie = new Briandais();
+        /*Briandais trie = new Briandais();
 
         String exemple_de_base = "A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches du clavier de la machine a ecrire ?";
         trie.insertionPhrase(exemple_de_base);
@@ -299,13 +310,15 @@ public class Briandais {
         Briandais trie2 = new Briandais();
         trie2.inserer("test2");
         trie2.inserer("abc2");
+        trie2.inserer("abc");
+        trie2.inserer("abc2");
 
         Briandais trie3 = new Briandais();
         trie3.inserer("test1");
         trie3.inserer("abc3");
         trie3.inserer("abc");
         
-        trie2.fusion(trie3);
+        //trie2.fusion(trie3);
         
 
         List<String> liste = trie2.listeMots();
@@ -313,12 +326,10 @@ public class Briandais {
             System.out.println(mot);
         }
 
-        
+        System.out.println("test : " + trie2.comptageMots());*/
 
 
         
-
-
 
     }
     
