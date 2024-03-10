@@ -23,6 +23,12 @@ public class Briandais {
     public Briandais(char caractere, BRDNoeud fils, BRDNoeud frere){
         this.racine = new BRDNoeud(caractere, fils, frere);
     }
+
+    // Garde que les lettres et les mets en minuscule
+    public static String formatText(String mot) {
+        return mot.toLowerCase().replaceAll("[^a-z]", "");
+    }
+
     public void inserer(String mot) {
         racine = BRDinsertion(racine, mot);
     }
@@ -293,14 +299,87 @@ public class Briandais {
         return racine;
     }
     
-    
+    // QUESTION 1.0.5 - Insertion de la phrase de base
+    public void insertFromFile(String path, boolean showWordsList, boolean showStats) {
+        File file = new File(path);
+        try (Scanner fileIn = new Scanner(new File(file.getAbsolutePath()))) {
+            while (fileIn.hasNext()) {
+                String mot = formatText(fileIn.next());
+                if (mot != null && mot != "") {
+                    if (!this.recherche(mot)) {
+                        this.inserer(mot);
+                    }
+                }
+            }
+            fileIn.close();
 
+            if (showWordsList) {
+                List<String> motsListe = this.listeMots();
+                for (String mots : motsListe) {
+                    System.out.println(mots);
+                }
+            }
+
+            if (showStats) {
+                System.out.println("Profondeur moyenne : " + this.profondeurMoyenne());
+                System.out.println("Hauteur : " + this.hauteur());
+                System.out.println("Nombre de mots : " + this.comptageMots());
+                System.out.println("Nombre de noeuds nuls : " + this.comptageNil());
+            }
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+    
+    // QUESTION 5.0.11 - Insertion des oeuvres de Shakespeare
+    public void insertShakespeare(boolean showWordsList, boolean showStats) {
+        File[] listOfFiles = new File("data/Shakespeare").listFiles();
+
+        for (File file : listOfFiles) {
+            try {
+                try {
+                    Scanner fileIn = new Scanner(new File(file.getAbsolutePath()));
+                    while (fileIn.hasNextLine()) {
+                        String mot = formatText(fileIn.nextLine());
+                        if (mot != null && mot != "") {
+                            if (!this.recherche(mot)) {
+                                this.inserer(mot);
+                            }
+                        }
+                    }
+                    fileIn.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (showWordsList) {
+            List<String> motsListe = this.listeMots();
+            for (String mots : motsListe) {
+                System.out.println(mots);
+            }
+        }
+
+        if (showStats) {
+            System.out.println("Profondeur moyenne : " + this.profondeurMoyenne());
+            System.out.println("Hauteur : " + this.hauteur());
+            System.out.println("Nombre de mots : " + this.comptageMots());
+            System.out.println("Nombre de noeuds nuls : " + this.comptageNil());
+        }
+
+    }
 
     
     
     public static void main(String[] args) {
-        /*Briandais trie = new Briandais();
-
+        Briandais trie = new Briandais();
+        /* 
         String exemple_de_base = "A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches du clavier de la machine a ecrire ?";
         trie.insertionPhrase(exemple_de_base);
 
@@ -328,7 +407,7 @@ public class Briandais {
 
         System.out.println("test : " + trie2.comptageMots());*/
 
-
+        trie.insertFromFile("data/base.txt", false, true);
         
 
     }

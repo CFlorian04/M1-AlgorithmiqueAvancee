@@ -1,9 +1,12 @@
 package structures.TrieHybride;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import structures.Briandais.Briandais;
@@ -99,7 +102,7 @@ public class TrieHybride {
         }
     }
 
-    public boolean recherhe(String mot) {
+    public boolean recherche(String mot) {
         return HYBRecherche(this.racine, formatText(mot));
     }
 
@@ -155,7 +158,7 @@ public class TrieHybride {
         HYBListeMots(this.racine, "", motsListe);
         return motsListe;
     }
-    
+
     public void HYBListeMots(HYBNoeud noeud, String motActuel, List<String> motsListe) {
         if (noeud == null) {
             return;
@@ -271,8 +274,7 @@ public class TrieHybride {
         }
     }
 
-    public void suppression(String mot)
-    {
+    public void suppression(String mot) {
         this.racine = HYBSuppression(this.racine, formatText(mot), 0);
     }
 
@@ -305,22 +307,22 @@ public class TrieHybride {
     public void equilibrer() {
         this.racine = HYBEquilibrer(this.racine);
     }
-    
+
     public HYBNoeud HYBEquilibrer(HYBNoeud noeud) {
         if (noeud == null) {
             return null;
         }
-    
+
         // Rééquilibrage des sous-arbres gauche, centre et droit
         noeud.gauche = HYBEquilibrer(noeud.gauche);
         noeud.centre = HYBEquilibrer(noeud.centre);
         noeud.droit = HYBEquilibrer(noeud.droit);
-    
+
         // Calcul de la hauteur des sous-arbres gauche, centre et droit
         int hauteurGauche = HYBHauteur(noeud.gauche);
         int hauteurCentre = HYBHauteur(noeud.centre);
         int hauteurDroit = HYBHauteur(noeud.droit);
-    
+
         // Rééquilibrage avec rotation droite
         if (hauteurGauche - hauteurCentre > 1) {
             HYBNoeud nouveauNoeud = noeud.gauche;
@@ -328,7 +330,7 @@ public class TrieHybride {
             nouveauNoeud.droit = noeud;
             noeud = nouveauNoeud;
         }
-    
+
         // Rééquilibrage avec rotation gauche
         if (hauteurDroit - hauteurCentre > 1) {
             HYBNoeud nouveauNoeud = noeud.droit;
@@ -336,27 +338,76 @@ public class TrieHybride {
             nouveauNoeud.gauche = noeud;
             noeud = nouveauNoeud;
         }
-    
+
         return noeud;
     }
 
+    // QUESTION 1.0.5 - Insertion de la phrase de base
+    public void insertFromFile(String path, boolean showWordsList, boolean showStats) {
+        File file = new File(path);
+        try (Scanner fileIn = new Scanner(file)) {
+            while (fileIn.hasNext()) {
+                String mot = formatText(fileIn.next());
+                if (mot != null && !mot.isEmpty()) {
+                    if (!recherche(mot)) {
+                        insertion(mot);
+                    }
+                }
+            }
 
-    // QUESTION 1.0.5
-    // Récupéré de Anh
-    public void insertionPhrase(String phrase) {
-        // Séparer le texte en mots et les insérer dans l'arbre
-        String[] mots = phrase.split("\\s+|(?=,)|(?<=,)");
-        Set<String> setSansDoublons = new LinkedHashSet<>();
-        for (String mot : mots) {
-            // Ajout du mot au set, les doublons seront ignorés
-            setSansDoublons.add(mot);
-        }
-        for (String mot : setSansDoublons) {
-            this.insertion(mot);
-            //System.out.println(mot);
+            if (showWordsList) {
+                List<String> motsListe = listeMots();
+                for (String mots : motsListe) {
+                    System.out.println(mots);
+                }
+            }
 
+            if (showStats) {
+                System.out.println("Profondeur moyenne : " + profondeurMoyenne());
+                System.out.println("Hauteur : " + hauteur());
+                System.out.println("Nombre de mots : " + comptageMots());
+                System.out.println("Nombre de noeuds nuls : " + comptageNil());
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        //System.out.println("taille " + setSansDoublons.size());
+    }
+
+    // QUESTION 5.0.11 - Insertion des oeuvres de Shakespeare
+    public void insertShakespeare(boolean showWordsList, boolean showStats) {
+        File[] listOfFiles = new File("data/Shakespeare").listFiles();
+
+        for (File file : listOfFiles) {
+            try {
+                Scanner fileIn = new Scanner(file);
+                while (fileIn.hasNextLine()) {
+                    String mot = formatText(fileIn.nextLine());
+                    if (mot != null && !mot.isEmpty()) {
+                        if (!recherche(mot)) {
+                            insertion(mot);
+                        }
+                    }
+                }
+                fileIn.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (showWordsList) {
+            List<String> motsListe = listeMots();
+            for (String mots : motsListe) {
+                System.out.println(mots);
+            }
+        }
+
+        if (showStats) {
+            System.out.println("Profondeur moyenne : " + profondeurMoyenne());
+            System.out.println("Hauteur : " + hauteur());
+            System.out.println("Nombre de mots : " + comptageMots());
+            System.out.println("Nombre de noeuds nuls : " + comptageNil());
+        }
     }
 
     public static void main(String[] args) {
@@ -369,8 +420,6 @@ public class TrieHybride {
         // trieHybride.insertion("pollution");
         // trieHybride.insertion("porte");
 
-        trieHybride.insertionPhrase("A quel genial professeur de dactylographie sommes nous redevables de la superbe phrase ci dessous, un modele du genre, que toute dactylo connait par coeur puisque elle fait appel a chacune des touches duclavier de la machine a ecrire ?");
-
         trieHybride.equilibrer();
 
         System.out.println(trieHybride.hauteur());
@@ -380,8 +429,8 @@ public class TrieHybride {
         for (String mot : motsListe) {
             System.out.println(mot);
         }
-        
 
+        trieHybride.insertFromFile("data/base.txt", false, true);
 
     }
 
