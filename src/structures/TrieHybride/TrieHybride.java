@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import structures.Briandais.BRDNoeud;
 import structures.Briandais.Briandais;
 
 public class TrieHybride {
@@ -341,8 +342,10 @@ public class TrieHybride {
     }
 
     public Briandais toBRD() {
-        return new Briandais();
+        Briandais briandais = new Briandais();
+        return briandais;
     }
+
 
     // QUESTION 1.0.5 - Insertion de la phrase de base
     public void insertFromFile(String path, boolean showWordsList, boolean showStats) {
