@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class Briandais {
 
-    private BRDNoeud racine;
+    public BRDNoeud racine;
 
     public Briandais() {
         this.racine = new BRDNoeud('\0'); 

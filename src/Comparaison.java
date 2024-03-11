@@ -1,12 +1,8 @@
-import structures.TrieHybride.HYBNoeud;
 import structures.TrieHybride.TrieHybride;
 import structures.Briandais.Briandais;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import structures.Briandais.BRDNoeud;
 
 public class Comparaison {
 
@@ -197,6 +193,29 @@ public class Comparaison {
 
     }
 
+    public static void ComptageNils() {
+        TrieHybride hybride = new TrieHybride();
+        hybride.insertShakespeare(false, false);
+
+        Briandais briandais = new Briandais();
+        briandais.insertShakespeare(false, false);
+
+        System.out.println("Null Nodes : Hybrid Trie : " + hybride.comptageNil() + " nodes");
+        System.out.println("Null Nodes : Briandais Trie : " + briandais.comptageNil() + " nodes");
+    }
+
+    public static void ComptageMots() {
+        TrieHybride hybride = new TrieHybride();
+        hybride.insertShakespeare(false, false);
+
+        Briandais briandais = new Briandais();
+        briandais.insertShakespeare(false, false);
+
+        System.out.println("Number Of Words : Hybrid Trie : " + hybride.comptageMots() + " words");
+        System.out.println("Number Of Words : Briandais Trie : " + briandais.comptageMots() + " words");
+    }
+
+
     public static void main(String[] args) {
 
         List<String> list = new ArrayList<>();
@@ -208,17 +227,21 @@ public class Comparaison {
 
         int nombreEssais = 50;
 
-        InsertTimeShakespeare(nombreEssais);
+        //InsertTimeShakespeare(nombreEssais);
 
-        InsertNewWord(nombreEssais, "algorithmie");
+        //InsertNewWord(nombreEssais, "algorithmie");
 
-        DeleteMultipleWords(nombreEssais, list);
+        //DeleteMultipleWords(nombreEssais, list);
 
-        SearchMultipleWords(nombreEssais, list);
+        //SearchMultipleWords(nombreEssais, list);
 
-        ProfondeurMoyenne();
+        //ProfondeurMoyenne();
 
-        Hauteur();
+        //Hauteur();
+
+        //ComptageNils();
+
+        ComptageMots();
 
     }
 

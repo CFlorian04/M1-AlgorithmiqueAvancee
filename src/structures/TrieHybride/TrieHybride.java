@@ -2,12 +2,9 @@ package structures.TrieHybride;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 import structures.Briandais.BRDNoeud;
 import structures.Briandais.Briandais;
@@ -164,9 +161,7 @@ public class TrieHybride {
             return;
         }
 
-        // Parcours in-order
-        HYBListeMots(noeud.droit, motActuel, motsListe);
-
+        
         // Ajout du caractère du nœud au mot actuel
         String nouveauMotActuel = motActuel + noeud.caractere;
 
@@ -174,6 +169,10 @@ public class TrieHybride {
         if (noeud.finMot) {
             motsListe.add(nouveauMotActuel);
         }
+
+        // Parcours in-order
+        HYBListeMots(noeud.droit, motActuel, motsListe);
+
 
         // Parcours in-order du sous-arbre central
         HYBListeMots(noeud.centre, nouveauMotActuel, motsListe);
@@ -345,7 +344,25 @@ public class TrieHybride {
 
     public Briandais toBRD() {
         Briandais briandais = new Briandais();
+        briandais.racine = HYBtoBRD(this.racine);
         return briandais;
+    }
+
+    private BRDNoeud HYBtoBRD(HYBNoeud hybNoeud) {
+        if (hybNoeud == null) {
+            return null;
+        }
+
+        BRDNoeud brdNoeud = new BRDNoeud(hybNoeud.caractere);
+
+        if (hybNoeud.finMot) {
+            brdNoeud.fils = new BRDNoeud('\0');
+        }
+
+        brdNoeud.frere = HYBtoBRD(hybNoeud.centre);
+        brdNoeud.fils = HYBtoBRD(hybNoeud.gauche);
+
+        return brdNoeud;
     }
 
     // QUESTION 1.0.5 - Insertion de la phrase de base
@@ -434,17 +451,23 @@ public class TrieHybride {
         // trieHybride.insertion("pollution");
         // trieHybride.insertion("porte");
 
-        trieHybride.equilibrer();
+        // trieHybride.equilibrer();
 
-        System.out.println(trieHybride.hauteur());
-        System.out.println(trieHybride.profondeurMoyenne());
+        // System.out.println(trieHybride.hauteur());
+        // System.out.println(trieHybride.profondeurMoyenne());
+
+        // List<String> motsListe = trieHybride.listeMots();
+        // for (String mot : motsListe) {
+        //     System.out.println(mot);
+        // }
+
+        trieHybride.insertFromFile("data/base.txt", false, true);
 
         List<String> motsListe = trieHybride.listeMots();
         for (String mot : motsListe) {
             System.out.println(mot);
         }
-
-        trieHybride.insertFromFile("data/base.txt", false, true);
+        
 
     }
 
