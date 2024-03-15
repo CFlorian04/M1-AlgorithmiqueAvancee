@@ -44,7 +44,8 @@ public class TrieHybride {
     }
 
     public HYBNoeud HYBInsertion(HYBNoeud noeud, String mot) {
-        if (mot.length() == 0) {
+
+        if (mot == null || mot.isEmpty()) {
             return noeud;
         }
 
@@ -72,6 +73,13 @@ public class TrieHybride {
 
         // Si le caractère du Noeud est égale au premier caractère du mot
         if (noeud.caractere == p) {
+
+            // Si c'est le dernier caractère -> Donc fin de mot
+            if (mot.length() == 1) {
+                noeud.finMot = true;
+                return noeud;
+            }
+
             noeud.centre = HYBInsertion(noeud.centre, rest(mot));
             return noeud;
         }
@@ -92,8 +100,8 @@ public class TrieHybride {
     }
 
     public HYBNoeud HYBConstruct(String mot) {
-        if (mot.length() == 0) {
-            return new HYBNoeud('\0', null, null, null, true);
+        if (mot.length() == 1) {
+            return new HYBNoeud(first(mot), null, null, null, true);
         } else {
             return new HYBNoeud(first(mot), null, HYBConstruct(rest(mot)), null, false);
         }
@@ -104,8 +112,9 @@ public class TrieHybride {
     }
 
     public Boolean HYBRecherche(HYBNoeud noeud, String mot) {
+
         if (mot.isEmpty()) {
-            return true;
+            return false;
         }
 
         if (noeud == null) {
@@ -115,7 +124,10 @@ public class TrieHybride {
         char p = first(mot);
 
         if (noeud.caractere == p) {
-            return HYBRecherche(noeud.centre, rest(mot));
+            if (mot.length() == 1)
+                return noeud.finMot;
+            else
+                return HYBRecherche(noeud.centre, rest(mot));
         } else if (noeud.caractere > p) {
             return HYBRecherche(noeud.droit, mot);
         } else if (noeud.caractere < p) {

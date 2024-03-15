@@ -13,17 +13,11 @@ public class Main {
         
         System.out.println("----- Trie Hybride -----");
         trieHybride.insertShakespeare(false, true);
+        //trieHybride.insertFromFile("data/base.txt", true, true);
 
-        briandais = trieHybride.toBRD();
 
         System.out.println("----- Briandais -----");
-        System.out.println("Profondeur moyenne : " + briandais.profondeurMoyenne());
-        System.out.println("Hauteur : " + briandais.hauteur());
-        System.out.println("Nombre de mots : " + briandais.comptageMots());
-        System.out.println("Nombre de noeuds nuls : " + briandais.comptageNil());
-
-        //System.out.println("----- Briandais -----");
-        //briandais.insertShakespeare(false,true);
-
+        briandais.insertShakespeare(false,true);
+        //briandais.insertFromFile("data/base.txt", true, true);
     }
 }
